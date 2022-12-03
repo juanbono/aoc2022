@@ -60,7 +60,15 @@ impl GameElement {
     }
 
     fn element_for_result(&self, expected_outcome: GameResult) -> GameElement {
-        todo!()
+        match (self, expected_outcome) {
+            (GameElement::Rock, GameResult::Win) => GameElement::Paper,
+            (GameElement::Rock, GameResult::Lose) => GameElement::Scissors,
+            (GameElement::Scissors, GameResult::Win) => GameElement::Rock,
+            (GameElement::Scissors, GameResult::Lose) => GameElement::Paper,
+            (GameElement::Paper, GameResult::Win) => GameElement::Scissors,
+            (GameElement::Paper, GameResult::Lose) => GameElement::Rock,
+            (element, GameResult::Draw) => element.to_owned(),
+        }
     }
 }
 
@@ -86,11 +94,11 @@ impl Tournament {
         for line in reader.lines() {
             let line = line.unwrap();
             let line_input: Vec<&str> = line.split(" ").collect_vec();
+            dbg!(&line_input);
             let oponent = GameElement::parse(line_input[0]).unwrap();
-            let game = (
-                oponent.player_should_play(line_input[1]),
-                oponent,
-            );
+            let game = (oponent.player_should_play(line_input[1]), oponent);
+            dbg!(&game);
+            games.push(game)
         }
 
         Tournament(games)
@@ -114,9 +122,26 @@ impl Tournament {
 fn main() {
     let input_file = File::open("input2").unwrap();
     let reader = BufReader::new(input_file);
-    let tournament = Tournament::from_reader(reader);
+    let tournament = Tournament::from_reader_part2(reader);
 
     let score = tournament.calculate_score();
 
     println!("The score is {score}");
+}
+
+
+#[cfg(test)]
+mod tests {
+    use std::io::BufReader;
+
+    use crate::Tournament;
+
+    #[test]
+    fn part2() {
+        let input = "A Y\nB X\nC Z";
+        let reader = BufReader::new(input.as_bytes());
+        let tournament = Tournament::from_reader_part2(reader);
+
+        assert_eq!(12, tournament.calculate_score());
+    }
 }
