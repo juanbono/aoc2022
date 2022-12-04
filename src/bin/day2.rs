@@ -120,7 +120,7 @@ impl Tournament {
 }
 
 fn main() {
-    let input_file = File::open("input2").unwrap();
+    let input_file = File::open("inputs/input2").unwrap();
     let reader = BufReader::new(input_file);
     let tournament = Tournament::from_reader_part2(reader);
 
