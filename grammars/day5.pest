@@ -1,0 +1,23 @@
+letter = { 'A' .. 'Z' }
+
+empty_crate = { "   " }
+
+full_crate = { "[" ~ letter ~ "]" }
+
+item = { (empty_crate | full_crate) ~ " "? }
+
+line = { item+ }
+
+digit = { '0' .. '9' }
+
+column_numbers = {(" " ~ digit ~ " " ~ " "?)+}
+
+state = { (line ~ (NEWLINE ~ line)*)? ~ NEWLINE? ~ column_numbers }
+
+number = { (digit ~ digit?) }
+
+instruction = { "move " ~ number ~ " from " ~ number ~ " to " ~ number }
+
+program = { (instruction ~ NEWLINE? )* }
+
+input = { state ~ NEWLINE ~ NEWLINE ~ program } 
